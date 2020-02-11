@@ -16,6 +16,8 @@
 
 package com.expediagroup.graphql.examples.query
 
+import com.expediagroup.graphql.annotations.GraphQLDescription
+import com.expediagroup.graphql.examples.directives.LowercaseDirective
 import com.expediagroup.graphql.spring.operations.Query
 import org.springframework.stereotype.Component
 
@@ -26,4 +28,8 @@ class SimpleQuery : Query {
 
     @Deprecated(message = "old deprecated query", replaceWith = ReplaceWith("dataFromBaseApp"))
     fun deprecatedBaseAppQuery() = "this is deprecated"
+
+    @GraphQLDescription("Returns message modified by the manually wired directive to force lowercase")
+    @LowercaseDirective
+    fun forceLowercaseEcho(msg: String) = msg
 }

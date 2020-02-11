@@ -16,6 +16,7 @@
 
 package com.expediagroup.graphql.examples.hooks
 
+import com.expediagroup.graphql.directives.KotlinDirectiveWiringFactory
 import com.expediagroup.graphql.federation.FederatedSchemaGeneratorHooks
 import com.expediagroup.graphql.federation.execution.FederatedTypeRegistry
 import graphql.language.StringValue
@@ -28,7 +29,10 @@ import kotlin.reflect.KType
 /**
  * Schema generator hook that adds additional scalar types.
  */
-class CustomFederationSchemaGeneratorHooks(federatedTypeRegistry: FederatedTypeRegistry) : FederatedSchemaGeneratorHooks(federatedTypeRegistry) {
+class CustomFederationSchemaGeneratorHooks(
+    federatedTypeRegistry: FederatedTypeRegistry,
+    override val wiringFactory: KotlinDirectiveWiringFactory
+) : FederatedSchemaGeneratorHooks(federatedTypeRegistry) {
 
     /**
      * Register additional GraphQL scalar types.

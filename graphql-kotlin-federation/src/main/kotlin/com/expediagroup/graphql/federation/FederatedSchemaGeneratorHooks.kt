@@ -56,7 +56,7 @@ open class FederatedSchemaGeneratorHooks(private val federatedTypeRegistry: Fede
     private val emptyQueryRegex = "^type Query \\{$\\s+^\\}$\\s+".toRegex(setOf(RegexOption.MULTILINE, RegexOption.IGNORE_CASE))
     private val validator = FederatedSchemaValidator()
 
-    private val directivesToInclude = listOf(EXTENDS_DIRECTIVE_NAME, EXTERNAL_DIRECTIVE_NAME, KEY_DIRECTIVE_NAME, PROVIDES_DIRECTIVE_NAME, REQUIRES_DIRECTIVE_NAME, DEPRECATED_DIRECTIVE_NAME)
+    private val directivesToInclude = listOf(EXTENDS_DIRECTIVE_NAME, EXTERNAL_DIRECTIVE_NAME, KEY_DIRECTIVE_NAME, PROVIDES_DIRECTIVE_NAME, REQUIRES_DIRECTIVE_NAME, DEPRECATED_DIRECTIVE_NAME, "lowercase")
     private val customDirectivePredicate: Predicate<GraphQLDirective> = Predicate { directivesToInclude.contains(it.name) }
 
     override fun willGenerateGraphQLType(type: KType): GraphQLType? = when (type.classifier) {

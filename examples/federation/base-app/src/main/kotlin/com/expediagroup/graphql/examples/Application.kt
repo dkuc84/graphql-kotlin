@@ -16,6 +16,9 @@
 
 package com.expediagroup.graphql.examples
 
+import com.expediagroup.graphql.directives.KotlinDirectiveWiringFactory
+import com.expediagroup.graphql.directives.KotlinSchemaDirectiveWiring
+import com.expediagroup.graphql.examples.directives.LowercaseSchemaDirectiveWiring
 import com.expediagroup.graphql.examples.hooks.CustomFederationSchemaGeneratorHooks
 import com.expediagroup.graphql.federation.execution.FederatedTypeRegistry
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -25,8 +28,11 @@ import org.springframework.context.annotation.Bean
 @SpringBootApplication
 class Application {
     @Bean
-    fun hooks(federatedTypeRegistry: FederatedTypeRegistry) =
-        CustomFederationSchemaGeneratorHooks(federatedTypeRegistry)
+    fun hooks(federatedTypeRegistry: FederatedTypeRegistry, wiringFactory: KotlinDirectiveWiringFactory) =
+        CustomFederationSchemaGeneratorHooks(federatedTypeRegistry, wiringFactory)
+
+    @Bean
+    fun wiringFactory() = KotlinDirectiveWiringFactory(manualWiring = mapOf<String, KotlinSchemaDirectiveWiring>("lowercase" to LowercaseSchemaDirectiveWiring()))
 }
 
 @Suppress("SpreadOperator")
