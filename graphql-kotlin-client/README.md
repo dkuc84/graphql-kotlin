@@ -24,7 +24,7 @@ With Maven:
 With Gradle (example using kts):
 
 ```kotlin
-compile("com.expediagroup:graphql-kotlin-client$latestVersion")
+compile("com.expediagroup:graphql-kotlin-client:$latestVersion")
 ```
 
 ## Use it
