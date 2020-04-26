@@ -68,7 +68,12 @@ class SimpleQueries : Query {
     fun nestedObjectQuery(): NestedObject = NestedObject(
         id = random.nextInt(),
         name = "nested",
-        children = emptyList()
+        children = listOf(
+            NestedObject(id = random.nextInt(), name = "child1", children = emptyList()),
+            NestedObject(id = random.nextInt(), name = "child2", children = listOf(
+                NestedObject(id = random.nextInt(), name = "grandkid", children = emptyList())
+            ))
+        )
     )
 
     @GraphQLDescription("Query returning an interface")
