@@ -45,7 +45,7 @@ data class GraphQLClientGeneratorContext(
     // shared type caches
     val enumClassToTypeSpecs: MutableMap<ClassName, TypeSpec> = mutableMapOf()
     val inputClassToTypeSpecs: MutableMap<ClassName, TypeSpec> = mutableMapOf()
-    val scalarClassToConverterTypeSpecs: MutableMap<ClassName, List<TypeSpec>> = mutableMapOf()
+    val scalarClassToConverterTypeSpecs: MutableMap<ClassName, ScalarConverterInfo> = mutableMapOf()
     val typeAliases: MutableMap<String, TypeAliasSpec> = mutableMapOf()
 
     // class name and type selection caches
@@ -54,6 +54,11 @@ data class GraphQLClientGeneratorContext(
 
     private val customScalarClassNames: Set<ClassName> = customScalarMap.values.map { it.className }.toSet()
     internal fun isCustomScalar(typeName: TypeName): Boolean = customScalarClassNames.contains(typeName)
+}
+
+sealed class ScalarConverterInfo {
+    data class JacksonConvertersInfo(val serializer: TypeSpec, val deserializer: TypeSpec): ScalarConverterInfo()
+    data class KotlinxSerializerInfo(val serializer: TypeSpec): ScalarConverterInfo()
 }
 
 internal fun GraphQLClientGeneratorContext.isOptionalInputSupported() = useOptionalInputWrapper && serializer == GraphQLSerializer.JACKSON

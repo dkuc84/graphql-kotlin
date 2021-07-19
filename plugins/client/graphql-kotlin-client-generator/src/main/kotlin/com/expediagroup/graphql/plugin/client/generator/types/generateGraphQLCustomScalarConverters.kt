@@ -18,6 +18,7 @@ package com.expediagroup.graphql.plugin.client.generator.types
 
 import com.expediagroup.graphql.plugin.client.generator.GraphQLClientGeneratorContext
 import com.expediagroup.graphql.plugin.client.generator.GraphQLSerializer
+import com.expediagroup.graphql.plugin.client.generator.ScalarConverterInfo
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
 import com.fasterxml.jackson.databind.util.StdConverter
@@ -50,19 +51,18 @@ internal fun generateGraphQLCustomScalarConverters(
     context: GraphQLClientGeneratorContext,
     scalarClassName: ClassName,
     converterClassName: ClassName
-) {
-    if (context.serializer == GraphQLSerializer.JACKSON) {
-        generateGraphQLCustomScalarJacksonConverters(context, scalarClassName, converterClassName)
+): ScalarConverterInfo {
+    return if (context.serializer == GraphQLSerializer.JACKSON) {
+        generateGraphQLCustomScalarJacksonConverters(scalarClassName, converterClassName)
     } else {
-        generateGraphQLCustomScalarKSerializer(context, scalarClassName, converterClassName)
+        generateGraphQLCustomScalarKSerializer(scalarClassName, converterClassName)
     }
 }
 
 private fun generateGraphQLCustomScalarJacksonConverters(
-    context: GraphQLClientGeneratorContext,
     scalarClassName: ClassName,
     converterClassName: ClassName
-) {
+): ScalarConverterInfo {
     val customScalarName = scalarClassName.simpleName
     val converter = PropertySpec.builder("converter", converterClassName)
         .initializer("%T()", converterClassName)
@@ -96,14 +96,16 @@ private fun generateGraphQLCustomScalarJacksonConverters(
                 .build()
         )
         .build()
-    context.scalarClassToConverterTypeSpecs[scalarClassName] = listOf(serializerConverterTypeSpec, deserializerConverterTypeSpec)
+    return ScalarConverterInfo.JacksonConvertersInfo(
+        serializer = serializerConverterTypeSpec,
+        deserializer = deserializerConverterTypeSpec
+    )
 }
 
 private fun generateGraphQLCustomScalarKSerializer(
-    context: GraphQLClientGeneratorContext,
     scalarClassName: ClassName,
     converterClassName: ClassName
-) {
+): ScalarConverterInfo {
     val customScalarName = scalarClassName.simpleName
     val serializerName = "${customScalarName}Serializer"
     val serializerTypeSpec = TypeSpec.objectBuilder(serializerName)
@@ -145,5 +147,5 @@ private fun generateGraphQLCustomScalarKSerializer(
         .build()
     serializerTypeSpec.addFunction(deserializeFun)
 
-    context.scalarClassToConverterTypeSpecs[scalarClassName] =  listOf(serializerTypeSpec.build())
+    return ScalarConverterInfo.KotlinxSerializerInfo(serializer = serializerTypeSpec.build())
 }
